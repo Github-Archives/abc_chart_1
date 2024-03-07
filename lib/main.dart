@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
         ),
         body: Column(
           children: [
-            const SizedBox(height: 20), // Add spacing between form and dog list
+            const SizedBox(height: 1), // Add spacing between form and dog list
             const DogList(),
             const MyCustomForm(),
           ],
@@ -77,55 +77,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// New
-class DogList extends StatefulWidget {
-  const DogList({Key? key}) : super(key: key);
-
-  @override
-  _DogListState createState() => _DogListState();
-}
-
-class _DogListState extends State<DogList> {
-  late Future<List<Dog>> _dogs;
-
-  @override
-  void initState() {
-    super.initState();
-    _dogs = DatabaseHelper.getDogs();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: FutureBuilder<List<Dog>>(
-        future: _dogs,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No dogs in the database.');
-          } else {
-            return Expanded(
-              child: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  final dog = snapshot.data![index];
-                  return ListTile(
-                    title: Text('${dog.name} - Age: ${dog.age}'),
-                  );
-                },
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-}
-
-// New
 // /////////////////////////////////////////////////////////////////////////////
 class MyCustomForm extends StatelessWidget {
   const MyCustomForm({Key? key});
@@ -165,34 +116,84 @@ class FieldInputWithTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+    // return Padding(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(height: 4.0),
-          Text(
-            smallText,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.grey,
+            SizedBox(height: 4.0),
+            Text(
+              smallText,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.grey,
+              ),
             ),
-          ),
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: hintText,
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: hintText,
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+    ),
+    );
+  }
+}
+
+// ////////////////////////////////////////////////////////////
+// New
+class DogList extends StatefulWidget {
+  const DogList({Key? key}) : super(key: key);
+
+  @override
+  _DogListState createState() => _DogListState();
+}
+
+class _DogListState extends State<DogList> {
+  late Future<List<Dog>> _dogs;
+
+  @override
+  void initState() {
+    super.initState();
+    _dogs = DatabaseHelper.getDogs();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Dog>>(
+      future: _dogs,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Text('No dogs in the database.');
+        } else {
+          return Expanded(
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final dog = snapshot.data![index];
+                return ListTile(
+                  title: Text('${dog.name} - Age: ${dog.age}'),
+                );
+              },
+            ),
+          );
+        }
+      },
     );
   }
 }
