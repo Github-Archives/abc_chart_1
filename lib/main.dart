@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 // 1. Add the dependencies
-import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 // import the database helper file
 import 'sqflite_database_helper.dart';
@@ -63,11 +60,11 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text(appTitle),
         ),
-        body: Column(
+        body: const Column(
           children: [
-            const SizedBox(height: 1), // Add spacing between form and dog list
-            const DogList(),
-            const MyCustomForm(),
+            SizedBox(height: 1), // Add spacing between form and dog list
+            DogList(),
+            MyCustomForm(),
           ],
         ),
         // body: const DogList(),
@@ -83,13 +80,13 @@ class MyCustomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
               'ABC Chart',
               style: TextStyle(
                 fontSize: 24.0,
@@ -112,7 +109,7 @@ class FieldInputWithTitle extends StatelessWidget {
   final String smallText;
   final String hintText;
 
-  const FieldInputWithTitle(this.title, this.smallText, this.hintText, {Key? key}) : super(key: key);
+  const FieldInputWithTitle(this.title, this.smallText, this.hintText, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,22 +122,22 @@ class FieldInputWithTitle extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 4.0),
+            const SizedBox(height: 4.0),
             Text(
               smallText,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12.0,
                 color: Colors.grey,
               ),
             ),
             TextField(
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 hintText: hintText,
               ),
             ),
@@ -154,7 +151,7 @@ class FieldInputWithTitle extends StatelessWidget {
 // ////////////////////////////////////////////////////////////
 // New
 class DogList extends StatefulWidget {
-  const DogList({Key? key}) : super(key: key);
+  const DogList({super.key});
 
   @override
   _DogListState createState() => _DogListState();
@@ -175,11 +172,11 @@ class _DogListState extends State<DogList> {
       future: _dogs,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Text('No dogs in the database.');
+          return const Text('No dogs in the database.');
         } else {
           return Expanded(
             child: ListView.builder(
